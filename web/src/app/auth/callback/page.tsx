@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import type { Session } from "@supabase/supabase-js";
 import { supabaseBrowser } from "@/lib/supabase-browser";
 
 interface DisplayUser {
@@ -12,12 +14,16 @@ interface DisplayUser {
 }
 
 export default function AuthCallbackPage() {
+  const router = useRouter();
   const [status, setStatus] = useState<"loading" | "ok" | "error">("loading");
   const [user, setUser] = useState<DisplayUser | null>(null);
+  const [reason, setReason] = useState<string | null>(null);
 
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
-    if (params.get("error")) {
+    const errDesc = params.get("error_description");
+    if (params.get("error") || errDesc) {
+      setReason(errDesc ? decodeURIComponent(errDesc) : null);
       setStatus("error");
       return;
     }
@@ -39,28 +45,31 @@ export default function AuthCallbackPage() {
       return;
     }
 
-    // Path B — Supabase Auth (Kakao/Google/Apple): session is in the URL hash.
-    supabaseBrowser.auth
-      .getSession()
-      .then(({ data }) => {
-        const s = data.session;
-        if (!s) {
-          setStatus("error");
-          return;
-        }
-        const u = s.user;
-        const meta = u.user_metadata ?? {};
-        setUser({
-          id: u.id,
-          email: u.email ?? null,
-          name: meta.name ?? meta.full_name ?? meta.nickname ?? null,
-          avatarUrl: meta.avatar_url ?? meta.picture ?? null,
-          via: u.app_metadata?.provider ?? "supabase",
-        });
-        setStatus("ok");
-        window.history.replaceState({}, "", "/auth/callback");
-      })
-      .catch(() => setStatus("error"));
+    // Path B — Supabase Auth (Kakao/Google/Apple). The PKCE code exchange runs
+    // asynchronously (detectSessionInUrl), so wait for the session via the
+    // auth listener AND an initial getSession, with a timeout fallback.
+    let done = false;
+    const settle = (s: Session | null) => {
+      if (done || !s) return;
+      done = true;
+      // New signups (no completed profile) go straight to profile setup.
+      const completed = s.user.user_metadata?.profile_completed === true;
+      router.replace(completed ? "/" : "/onboarding/profile");
+    };
+
+    const { data: sub } = supabaseBrowser.auth.onAuthStateChange((_e, session) =>
+      settle(session),
+    );
+    supabaseBrowser.auth.getSession().then(({ data }) => settle(data.session));
+
+    const timer = setTimeout(() => {
+      if (!done) setStatus("error");
+    }, 5000);
+
+    return () => {
+      sub.subscription.unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   return (
@@ -81,6 +90,7 @@ export default function AuthCallbackPage() {
       {status === "error" && (
         <>
           <h1 style={{ color: "#b70051" }}>로그인 실패</h1>
+          {reason && <p style={{ color: "#5b3f45", fontSize: 13, maxWidth: 360 }}>{reason}</p>}
           <a href="/login" style={{ color: "#008092" }}>
             다시 시도하기
           </a>

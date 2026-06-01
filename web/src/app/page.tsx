@@ -1,5 +1,6 @@
 import Image from "next/image";
 import styles from "./page.module.css";
+import UserMenu from "./_components/UserMenu";
 
 const navLinks = [
   { label: "홈", active: true },
@@ -50,9 +51,7 @@ export default function HomePage() {
             <span className={styles.searchIcon}>🔍</span>
             <span className={styles.searchText}>크루 · 셀러 · 상품 검색</span>
           </div>
-          <a href="/login" className={styles.loginBtn}>
-            로그인
-          </a>
+          <UserMenu />
         </div>
       </header>
 
