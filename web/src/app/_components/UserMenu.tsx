@@ -91,6 +91,9 @@ export default function UserMenu() {
               {profile.email && <span className={styles.menuEmail}>{profile.email}</span>}
             </div>
           </div>
+          <a href="/onboarding/profile" className={styles.menuItem}>
+            내 정보
+          </a>
           <button className={styles.logout} onClick={logout}>
             로그아웃
           </button>

@@ -46,7 +46,23 @@ npm start            # Expo — iOS/Android 시뮬레이터 또는 Expo Go
 - API 주소는 `mobile/src/config.ts`에서 설정 (Android 에뮬레이터는 `10.0.2.2`).
 - 모바일 OAuth는 앱 스킴(`crucru://auth/callback`)으로 복귀하도록 백엔드 리다이렉트 분기가 추가로 필요 (현재 웹 리다이렉트 기준).
 
-## provider별 설정
-각 콘솔에 Redirect URI 등록 (로컬 기준):
-`http://localhost:3000/api/auth/{kakao|google|naver|apple}/callback`
-Kakao 상세는 [SETUP-KAKAO.md](SETUP-KAKAO.md) 참고. 현재 `.env`에 채워진 provider만 활성화됩니다.
+## 인증 방식 (현재)
+- **Kakao / Google / Apple → Supabase Auth** (`signInWithOAuth`). 각 provider 콘솔의 Redirect URI는 **Supabase 콜백** `https://<ref>.supabase.co/auth/v1/callback`. 키는 Supabase 대시보드 → Auth → Providers에 입력.
+- **Naver → 커스텀 백엔드** (`/api/auth/naver`, Supabase 미지원). Redirect URI는 `<APP_BASE_URL>/api/auth/naver/callback`.
+- 로그인 후 `user_metadata.profile_completed` 없으면 `/onboarding/profile`로, 있으면 홈으로.
+- Kakao 상세 셋업은 [SETUP-KAKAO.md](SETUP-KAKAO.md) 참고. (Kakao 이메일 동의는 비즈앱 전환 필요)
+
+## Vercel 배포 (web)
+모노레포라 **Root Directory를 `web`로** 지정해야 합니다 (안 하면 404).
+1. Vercel → 프로젝트 → **Settings → General → Root Directory = `web`**
+2. **Settings → Environment Variables** (Production + Preview)에 추가:
+   ```
+   SUPABASE_URL, SUPABASE_SERVICE_ROLE_KEY
+   JWT_ACCESS_SECRET, JWT_REFRESH_SECRET, JWT_ACCESS_TTL, JWT_REFRESH_TTL
+   NEXT_PUBLIC_SUPABASE_URL, NEXT_PUBLIC_SUPABASE_ANON_KEY
+   ```
+   값은 `web/.env` 참고. (Kakao/Google/Apple 키는 Supabase가 처리하므로 불필요. Naver 추가 시 `NAVER_CLIENT_ID/SECRET` 추가)
+3. **Supabase → Auth → URL Configuration → Redirect URLs**에 `https://<your-app>.vercel.app/auth/callback` 추가 (Site URL도 Vercel 도메인 권장)
+4. **Redeploy**
+
+> 모바일 브라우저에서도 이 Vercel 웹은 반응형으로 접속됩니다. 네이티브 앱(`mobile/`)은 Vercel이 아니라 Expo/앱스토어로 별도 배포.
