@@ -13,3 +13,12 @@ dist/
 *.tsbuildinfo
 next-env.d.ts
 .gstack/
+
+# Expo / React Native (mobile/)
+.expo/
+*.jks
+*.p8
+*.p12
+*.key
+*.mobileprovision
+.expo-shared/

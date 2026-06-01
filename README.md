@@ -1,99 +1,52 @@
-# crucru-auth
+# crucru
 
-Google / Kakao / Naver 소셜 로그인 백엔드. OAuth2 Authorization Code 플로우를 세 provider에 대해 동일한 인터페이스로 구현하고, 사용자 정보를 **Supabase(Postgres)** 에 저장하며, 로그인 성공 시 **자체 JWT(access + refresh)** 를 발급합니다.
-
-> Supabase Auth는 Google·Kakao는 네이티브 지원하지만 Naver는 미지원이라, 세 provider를 통일된 방식으로 다루기 위해 OAuth 플로우를 직접 구현했습니다. (Supabase는 DB + 토큰 저장소로 사용)
-
-## 아키텍처
+라이브 커머스 PoC. 모노레포 — **데스크톱 웹(셀러/관리자)** 과 **모바일 앱(시청자)** 을 분리하고, **소셜 로그인 인증 백엔드**(Kakao / Google / Apple / Naver)는 웹 쪽 Next.js API로 공유합니다.
 
 ```
-브라우저 ──GET /auth/google──▶ 백엔드 ──redirect──▶ provider 동의 화면
-                                                        │
-브라우저 ◀──redirect(tokens)── 백엔드 ◀──code+state──────┘
-   │                              │
-   │                              ├─ code → access_token 교환
-   │                              ├─ access_token → 프로필 조회 (정규화)
-   │                              ├─ Supabase users/social_accounts upsert
-   │                              └─ 자체 JWT(access+refresh) 발급
-   ▼
-FRONTEND_REDIRECT_URL?access_token=...&refresh_token=...
+crucru/
+├── web/      Next.js (App Router) — 데스크톱 셀러/관리자 웹 + 공유 auth API
+│   ├── src/app/                  메인(/), 로그인(/login), 콜백(/auth/callback)
+│   ├── src/app/api/auth/         /api/auth/[provider], callback, refresh, logout, me
+│   ├── src/providers/            google · kakao · naver · apple (통일 인터페이스)
+│   ├── src/services/             유저 upsert, JWT 발급/회전/폐기
+│   ├── src/lib/                  supabase(service-role), jwt
+│   └── supabase/migrations/      users · social_accounts · refresh_tokens
+├── mobile/   Expo (React Native) — 시청자 앱
+│   ├── App.tsx                   네비게이션 (Main → Login)
+│   └── src/screens/              MainScreen(메인 홈), LoginScreen(소셜 로그인)
+└── design/   Figma 추출 레퍼런스 이미지
 ```
 
-핵심 추상화는 `src/providers/types.ts`의 `OAuthProvider` 인터페이스입니다. provider 추가는 파일 하나 + 레지스트리 한 줄이면 됩니다.
+## 플랫폼 매핑
+- **모바일 앱(Expo RN)** = 시청자용. 앱을 켜면 **메인 홈**이 바로 뜨고, **로그인은 우측 상단**.
+- **데스크톱 웹(Next.js)** = 셀러/관리자용. 메인 랜딩 → 우측 상단 로그인 → 셀러 로그인 시 관리자 화면(추후).
+- **auth 백엔드** = `web/`의 Next.js route handler. 양쪽이 동일한 `/api/auth/*`를 사용.
 
-## 디렉토리
+## 인증 흐름
+1. 로그인 시작: `GET /api/auth/{provider}` → provider 동의 화면 (서명 state로 CSRF 방어)
+2. 콜백: `/api/auth/{provider}/callback` (Apple은 form_post POST) → code 교환 → 프로필 정규화 → Supabase upsert → 자체 JWT(access/refresh) 발급
+3. 프론트로 토큰 전달 → `/api/auth/me`로 유저 확인, `/api/auth/refresh`로 회전
 
+## 실행
+### web (데스크톱 + auth API)
+```bash
+cd web
+npm install
+# .env 채우기 (.env.example 참고): SUPABASE_*, JWT_*, KAKAO_* 등
+npm run dev          # http://localhost:3000
 ```
-src/
-  config/env.ts            환경변수 검증 (zod)
-  lib/supabase.ts          service-role Supabase 클라이언트
-  lib/jwt.ts               access/refresh 서명·검증, 해시
-  providers/
-    types.ts               OAuthProvider 인터페이스 + 정규화 프로필
-    google.ts kakao.ts naver.ts
-    index.ts               레지스트리
-  services/auth.service.ts 유저 upsert, 토큰 발급/회전/폐기
-  middleware/auth.middleware.ts  Bearer 가드 (requireAuth)
-  routes/auth.routes.ts    /auth/:provider, /callback, /refresh, /logout, /me
-  index.ts                 express 부트스트랩
-supabase/migrations/0001_auth_schema.sql
+Supabase 스키마: `web/supabase/migrations/0001_auth_schema.sql` 적용 (이미 적용됨).
+
+### mobile (시청자 앱)
+```bash
+cd mobile
+npm install
+npm start            # Expo — iOS/Android 시뮬레이터 또는 Expo Go
 ```
+- API 주소는 `mobile/src/config.ts`에서 설정 (Android 에뮬레이터는 `10.0.2.2`).
+- 모바일 OAuth는 앱 스킴(`crucru://auth/callback`)으로 복귀하도록 백엔드 리다이렉트 분기가 추가로 필요 (현재 웹 리다이렉트 기준).
 
-## 셋업
-
-1. 의존성 설치
-   ```bash
-   npm install
-   ```
-
-2. 환경변수
-   ```bash
-   cp .env.example .env   # Windows PowerShell: Copy-Item .env.example .env
-   ```
-   `.env`를 채웁니다. JWT 시크릿은 충분히 긴 랜덤 문자열로:
-   ```bash
-   node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
-   ```
-
-3. DB 스키마 적용
-   `supabase/migrations/0001_auth_schema.sql`을 Supabase SQL editor에 붙여넣거나 `supabase db push`.
-
-4. 실행
-   ```bash
-   npm run dev      # tsx watch
-   # 또는
-   npm run build && npm start
-   ```
-
-## provider 콘솔 설정 (Redirect URI 등록 필수)
-
-각 provider 개발자 콘솔에 아래 callback URL을 등록해야 합니다 (운영에서는 도메인 교체):
-
-| Provider | Redirect URI | 발급처 |
-|----------|--------------|--------|
-| Google | `http://localhost:4000/auth/google/callback` | console.cloud.google.com → OAuth 2.0 클라이언트 ID |
-| Kakao  | `http://localhost:4000/auth/kakao/callback`  | developers.kakao.com → 앱 → 카카오 로그인 → Redirect URI. REST API 키 = `KAKAO_CLIENT_ID`. 동의항목에서 이메일/닉네임/프로필 활성화 |
-| Naver  | `http://localhost:4000/auth/naver/callback`  | developers.naver.com → 애플리케이션 등록 |
-
-## 엔드포인트
-
-| Method | Path | 설명 |
-|--------|------|------|
-| GET  | `/auth/:provider` | 로그인 시작 (provider로 redirect) |
-| GET  | `/auth/:provider/callback` | provider 콜백 → 토큰 발급 후 프론트로 redirect |
-| POST | `/auth/refresh` `{ refreshToken }` | refresh 토큰 회전, 새 토큰 쌍 반환 |
-| POST | `/auth/logout` `{ refreshToken }` | refresh 토큰 폐기 |
-| GET  | `/auth/me` (Bearer) | 현재 사용자 |
-| GET  | `/health` | 헬스체크 |
-
-### 응답 예 (`/auth/refresh`)
-```json
-{ "accessToken": "...", "refreshToken": "...", "expiresIn": 900 }
-```
-
-## 보안 노트
-
-- **state(CSRF)**: 로그인 시작 시 랜덤 state를 httpOnly 쿠키에 저장하고 콜백에서 대조. Naver는 토큰 교환 단계에도 동일 state 전달.
-- **service-role 키**: 서버 전용. 절대 브라우저로 노출 금지. RLS는 켜두되 정책 없음 → anon 키로는 접근 불가.
-- **refresh 토큰**: jti의 sha256 해시만 DB 저장. 회전(rotation) 시 단일 사용 후 폐기 → 재사용 방어.
-- **토큰 전달**: 현재는 콜백에서 프론트 URL 쿼리로 전달. 보안을 더 높이려면 httpOnly 쿠키 또는 1회용 교환 코드 방식으로 바꾸세요 (`auth.routes.ts` 콜백 끝부분).
+## provider별 설정
+각 콘솔에 Redirect URI 등록 (로컬 기준):
+`http://localhost:3000/api/auth/{kakao|google|naver|apple}/callback`
+Kakao 상세는 [SETUP-KAKAO.md](SETUP-KAKAO.md) 참고. 현재 `.env`에 채워진 provider만 활성화됩니다.

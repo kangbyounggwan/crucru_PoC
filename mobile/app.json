@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "Crucru",
+    "slug": "crucru",
+    "scheme": "crucru",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": false,
+    "splash": {
+      "backgroundColor": "#b70051",
+      "resizeMode": "contain"
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "io.crucru.app"
+    },
+    "android": {
+      "package": "io.crucru.app"
+    }
+  }
+}

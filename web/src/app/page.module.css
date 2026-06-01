@@ -1,0 +1,214 @@
+.main {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 clamp(20px, 5vw, 64px);
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  align-items: center;
+  gap: 48px;
+  padding: clamp(40px, 8vh, 96px) 0 64px;
+}
+
+.badge {
+  display: inline-block;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  color: var(--brand);
+  background: rgba(183, 0, 81, 0.08);
+  padding: 6px 14px;
+  border-radius: 9999px;
+}
+
+.title {
+  margin-top: 18px;
+  font-size: clamp(40px, 6vw, 68px);
+  font-weight: 800;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--ink);
+}
+.titleAccent {
+  color: var(--brand);
+}
+
+.subtitle {
+  margin-top: 20px;
+  font-size: clamp(16px, 1.6vw, 20px);
+  font-weight: 500;
+  color: var(--muted);
+  max-width: 30ch;
+}
+
+.heroCtas {
+  display: flex;
+  gap: 12px;
+  margin-top: 32px;
+}
+
+.primaryCta {
+  height: 56px;
+  padding: 0 28px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  border-radius: 9999px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  box-shadow: 0 12px 28px rgba(183, 0, 81, 0.28);
+  transition: filter 0.15s ease, transform 0.08s ease;
+}
+.primaryCta:hover {
+  filter: brightness(1.06);
+}
+.primaryCta:active {
+  transform: scale(0.98);
+}
+
+.secondaryCta {
+  height: 56px;
+  padding: 0 26px;
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background: #fff;
+  border: 1px solid var(--google-border);
+  color: var(--ink);
+  font-size: 16px;
+  font-weight: 600;
+}
+.secondaryCta:hover {
+  background: #f5f5f7;
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  margin-top: 24px;
+}
+.tag {
+  background: var(--tag-bg);
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 5px 14px;
+  border-radius: 9999px;
+}
+
+/* ---------- Hero visual ---------- */
+.heroVisual {
+  position: relative;
+}
+.heroImageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 36px;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 50% 25%, #f2f2f4 0%, #d3d3da 100%);
+}
+.heroImage {
+  object-fit: contain;
+}
+.sticker {
+  position: absolute;
+  top: 14px;
+  right: 10px;
+  transform: rotate(8deg);
+  background: var(--ink);
+  color: #f9f9fb;
+  font-weight: 800;
+  font-size: 16px;
+  padding: 10px 18px;
+  border-radius: 9999px;
+  box-shadow: 0 10px 24px rgba(26, 28, 29, 0.28);
+}
+.jackpot {
+  position: absolute;
+  left: -8px;
+  bottom: 18px;
+  display: flex;
+  flex-direction: column;
+  padding: 14px 22px;
+  border-radius: 20px;
+  color: #fff;
+  background: linear-gradient(135deg, #7b2ff7 0%, #b70051 100%);
+  box-shadow: 0 16px 32px rgba(123, 47, 247, 0.35);
+}
+.jackpotLabel {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  opacity: 0.85;
+}
+.jackpotValue {
+  font-size: 26px;
+  font-weight: 800;
+}
+
+/* ---------- Features ---------- */
+.features {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  padding-bottom: 64px;
+}
+.featureCard {
+  padding: 28px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+.featureEmoji {
+  font-size: 32px;
+}
+.featureTitle {
+  margin-top: 14px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.featureDesc {
+  margin-top: 8px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: var(--muted);
+}
+
+.footer {
+  padding: 32px 0 56px;
+  text-align: center;
+  font-size: 14px;
+  color: var(--muted);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 900px) {
+  .hero {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 32px;
+  }
+  .subtitle {
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .heroCtas,
+  .tags {
+    justify-content: center;
+  }
+  .heroVisual {
+    max-width: 380px;
+    margin: 0 auto;
+  }
+  .features {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,95 +1,95 @@
-.viewport {
+.split {
   min-height: 100dvh;
-  display: flex;
-  justify-content: center;
-  background:
-    radial-gradient(120% 60% at 50% 0%, rgba(183, 0, 81, 0.08) 0%, rgba(183, 0, 81, 0) 60%),
-    var(--page-bg);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
 }
 
-.frame {
-  width: 100%;
-  max-width: 390px;
-  padding: 24px 20px 28px;
+/* ---------- Left brand panel ---------- */
+.brandPanel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 36px 44px;
+  color: #fff;
+  background:
+    radial-gradient(120% 80% at 30% 20%, rgba(255, 255, 255, 0.12) 0%, rgba(255, 255, 255, 0) 50%),
+    linear-gradient(150deg, #7b2ff7 0%, #b70051 70%);
+  overflow: hidden;
+}
+
+.brandLogo {
+  font-size: 26px;
+  font-weight: 800;
+  color: #fff;
+}
+
+.brandCenter {
   display: flex;
   flex-direction: column;
   align-items: center;
-}
-
-/* ---------- Hero ---------- */
-.hero {
-  position: relative;
-  width: 100%;
-  margin-top: 12px;
+  gap: 24px;
 }
 
 .heroImageWrap {
   position: relative;
-  width: 100%;
+  width: min(360px, 70%);
   aspect-ratio: 1 / 1;
-  border-radius: 28px;
+  border-radius: 32px;
   overflow: hidden;
-  background: radial-gradient(120% 120% at 50% 30%, #f2f2f4 0%, #d9d9de 100%);
+  background: radial-gradient(120% 120% at 50% 25%, rgba(255, 255, 255, 0.25) 0%, rgba(255, 255, 255, 0.05) 100%);
 }
-
 .heroImage {
   object-fit: contain;
 }
-
 .sticker {
   position: absolute;
-  top: 10px;
-  right: 6px;
+  top: 12px;
+  right: 8px;
   transform: rotate(8deg);
   background: var(--ink);
   color: #f9f9fb;
   font-weight: 800;
   font-size: 14px;
-  letter-spacing: 0.02em;
   padding: 8px 14px;
   border-radius: 9999px;
-  box-shadow: 0 8px 20px rgba(26, 28, 29, 0.25);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+}
+.brandTagline {
+  font-size: 22px;
+  font-weight: 700;
+}
+.brandFootnote {
+  font-size: 14px;
+  opacity: 0.9;
 }
 
-/* ---------- Brand ---------- */
-.brand {
-  text-align: center;
-  margin-top: 22px;
+/* ---------- Right form panel ---------- */
+.formPanel {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 24px;
+  background: var(--page-bg);
+}
+
+.card {
+  width: 100%;
+  max-width: 380px;
 }
 
 .title {
-  font-size: 40px;
+  font-size: 28px;
   font-weight: 800;
-  color: var(--brand);
-  line-height: 1;
+  color: var(--ink);
 }
-
-.subtitle {
-  margin-top: 10px;
-  font-size: 20px;
-  font-weight: 600;
+.lead {
+  margin-top: 8px;
+  font-size: 15px;
   color: var(--muted);
 }
 
-.tags {
-  display: flex;
-  gap: 8px;
-  justify-content: center;
-  margin-top: 12px;
-}
-
-.tag {
-  background: var(--tag-bg);
-  color: var(--ink);
-  font-size: 12px;
-  font-weight: 600;
-  padding: 4px 12px;
-  border-radius: 9999px;
-}
-
-/* ---------- Buttons ---------- */
 .buttons {
-  width: 100%;
   margin-top: 28px;
   display: flex;
   flex-direction: column;
@@ -107,13 +107,11 @@
   font-size: 16px;
   font-weight: 600;
   border: none;
-  transition: transform 0.08s ease, filter 0.15s ease;
+  transition: transform 0.08s ease, filter 0.15s ease, background 0.15s ease;
 }
-
 .btn:active {
   transform: scale(0.985);
 }
-
 .btnIcon {
   position: absolute;
   left: 20px;
@@ -128,7 +126,6 @@
 .kakao:hover {
   filter: brightness(0.97);
 }
-
 .google {
   background: #fff;
   color: #1a1a1a;
@@ -137,15 +134,13 @@
 .google:hover {
   background: #f7f7f9;
 }
-
 .apple {
   background: var(--ink);
   color: #f9f9fb;
 }
 .apple:hover {
-  filter: brightness(1.15);
+  filter: brightness(1.2);
 }
-
 .naver {
   background: var(--naver);
   color: #fff;
@@ -154,15 +149,12 @@
   filter: brightness(0.96);
 }
 
-/* ---------- Divider ---------- */
 .divider {
-  width: 100%;
   display: flex;
   align-items: center;
   gap: 12px;
   margin: 22px 0 18px;
 }
-
 .divider::before,
 .divider::after {
   content: "";
@@ -170,14 +162,14 @@
   height: 1px;
   background: #e6e6ea;
 }
-
 .dividerText {
-  font-size: 16px;
+  font-size: 15px;
   color: var(--muted);
 }
 
-/* ---------- Email link ---------- */
 .emailLink {
+  display: block;
+  text-align: center;
   font-size: 16px;
   color: var(--teal);
   font-weight: 500;
@@ -186,11 +178,10 @@
   text-decoration: underline;
 }
 
-/* ---------- Seller CTA ---------- */
 .sellerCta {
   position: relative;
   width: 100%;
-  height: 64px;
+  height: 60px;
   margin-top: 22px;
   border-radius: 9999px;
   background: var(--brand);
@@ -205,24 +196,13 @@
 .sellerCta:hover {
   filter: brightness(1.05);
 }
-.sellerCta .arrow {
+.arrow {
   position: absolute;
   right: 22px;
   display: flex;
 }
 
-/* ---------- Footnote ---------- */
-.footnote {
-  margin-top: 20px;
-  font-size: 14px;
-  color: var(--muted);
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
 .error {
-  width: 100%;
   margin-top: 16px;
   padding: 12px 16px;
   border-radius: 12px;
@@ -230,4 +210,21 @@
   color: var(--brand);
   font-size: 14px;
   text-align: center;
+}
+
+/* ---------- Responsive: stack ---------- */
+@media (max-width: 860px) {
+  .split {
+    grid-template-columns: 1fr;
+  }
+  .brandPanel {
+    min-height: 280px;
+    padding: 24px;
+  }
+  .brandCenter {
+    gap: 16px;
+  }
+  .brandTagline {
+    font-size: 18px;
+  }
 }
