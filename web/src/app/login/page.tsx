@@ -1,19 +1,7 @@
 import Image from "next/image";
 import styles from "./login.module.css";
-import {
-  AppleIcon,
-  ArrowRight,
-  GoogleIcon,
-  KakaoIcon,
-  NaverIcon,
-} from "../_components/icons";
-
-const socialButtons = [
-  { provider: "kakao", label: "카카오로 시작하기", className: styles.kakao, icon: <KakaoIcon /> },
-  { provider: "google", label: "구글로 시작하기", className: styles.google, icon: <GoogleIcon /> },
-  { provider: "apple", label: "Apple로 시작하기", className: styles.apple, icon: <AppleIcon /> },
-  { provider: "naver", label: "네이버로 시작하기", className: styles.naver, icon: <NaverIcon /> },
-];
+import { ArrowRight } from "../_components/icons";
+import SocialButtons from "./_components/SocialButtons";
 
 export default function LoginPage({
   searchParams,
@@ -54,18 +42,7 @@ export default function LoginPage({
             <p className={styles.error}>로그인에 실패했어요. 다시 시도해 주세요.</p>
           )}
 
-          <div className={styles.buttons}>
-            {socialButtons.map((b) => (
-              <a
-                key={b.provider}
-                href={`/api/auth/${b.provider}`}
-                className={`${styles.btn} ${b.className}`}
-              >
-                <span className={styles.btnIcon}>{b.icon}</span>
-                {b.label}
-              </a>
-            ))}
-          </div>
+          <SocialButtons />
 
           <div className={styles.divider}>
             <span className={styles.dividerText}>또는</span>
