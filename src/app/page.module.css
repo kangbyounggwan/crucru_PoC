@@ -1,0 +1,233 @@
+.viewport {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(183, 0, 81, 0.08) 0%, rgba(183, 0, 81, 0) 60%),
+    var(--page-bg);
+}
+
+.frame {
+  width: 100%;
+  max-width: 390px;
+  padding: 24px 20px 28px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative;
+  width: 100%;
+  margin-top: 12px;
+}
+
+.heroImageWrap {
+  position: relative;
+  width: 100%;
+  aspect-ratio: 1 / 1;
+  border-radius: 28px;
+  overflow: hidden;
+  background: radial-gradient(120% 120% at 50% 30%, #f2f2f4 0%, #d9d9de 100%);
+}
+
+.heroImage {
+  object-fit: contain;
+}
+
+.sticker {
+  position: absolute;
+  top: 10px;
+  right: 6px;
+  transform: rotate(8deg);
+  background: var(--ink);
+  color: #f9f9fb;
+  font-weight: 800;
+  font-size: 14px;
+  letter-spacing: 0.02em;
+  padding: 8px 14px;
+  border-radius: 9999px;
+  box-shadow: 0 8px 20px rgba(26, 28, 29, 0.25);
+}
+
+/* ---------- Brand ---------- */
+.brand {
+  text-align: center;
+  margin-top: 22px;
+}
+
+.title {
+  font-size: 40px;
+  font-weight: 800;
+  color: var(--brand);
+  line-height: 1;
+}
+
+.subtitle {
+  margin-top: 10px;
+  font-size: 20px;
+  font-weight: 600;
+  color: var(--muted);
+}
+
+.tags {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+
+.tag {
+  background: var(--tag-bg);
+  color: var(--ink);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 9999px;
+}
+
+/* ---------- Buttons ---------- */
+.buttons {
+  width: 100%;
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.btn {
+  position: relative;
+  height: 56px;
+  border-radius: 9999px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  transition: transform 0.08s ease, filter 0.15s ease;
+}
+
+.btn:active {
+  transform: scale(0.985);
+}
+
+.btnIcon {
+  position: absolute;
+  left: 20px;
+  display: flex;
+  align-items: center;
+}
+
+.kakao {
+  background: var(--kakao);
+  color: var(--ink);
+}
+.kakao:hover {
+  filter: brightness(0.97);
+}
+
+.google {
+  background: #fff;
+  color: #1a1a1a;
+  border: 1px solid var(--google-border);
+}
+.google:hover {
+  background: #f7f7f9;
+}
+
+.apple {
+  background: var(--ink);
+  color: #f9f9fb;
+}
+.apple:hover {
+  filter: brightness(1.15);
+}
+
+.naver {
+  background: var(--naver);
+  color: #fff;
+}
+.naver:hover {
+  filter: brightness(0.96);
+}
+
+/* ---------- Divider ---------- */
+.divider {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 22px 0 18px;
+}
+
+.divider::before,
+.divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e6e6ea;
+}
+
+.dividerText {
+  font-size: 16px;
+  color: var(--muted);
+}
+
+/* ---------- Email link ---------- */
+.emailLink {
+  font-size: 16px;
+  color: var(--teal);
+  font-weight: 500;
+}
+.emailLink:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Seller CTA ---------- */
+.sellerCta {
+  position: relative;
+  width: 100%;
+  height: 64px;
+  margin-top: 22px;
+  border-radius: 9999px;
+  background: var(--brand);
+  color: #fff;
+  font-size: 16px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 10px 24px rgba(183, 0, 81, 0.28);
+}
+.sellerCta:hover {
+  filter: brightness(1.05);
+}
+.sellerCta .arrow {
+  position: absolute;
+  right: 22px;
+  display: flex;
+}
+
+/* ---------- Footnote ---------- */
+.footnote {
+  margin-top: 20px;
+  font-size: 14px;
+  color: var(--muted);
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.error {
+  width: 100%;
+  margin-top: 16px;
+  padding: 12px 16px;
+  border-radius: 12px;
+  background: rgba(183, 0, 81, 0.08);
+  color: var(--brand);
+  font-size: 14px;
+  text-align: center;
+}

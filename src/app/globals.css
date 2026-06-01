@@ -1,0 +1,39 @@
+:root {
+  --brand: #b70051;
+  --ink: #1a1c1d;
+  --muted: #5b3f45;
+  --tag-bg: #edeef0;
+  --teal: #008092;
+  --kakao: #fee500;
+  --naver: #03c75a;
+  --google-border: #e2e3e7;
+  --page-bg: #fafafb;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  background: var(--page-bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+button {
+  font: inherit;
+  cursor: pointer;
+}
